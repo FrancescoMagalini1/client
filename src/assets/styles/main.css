@@ -1,0 +1,45 @@
+#app {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-columns: var(--space-xl) 1fr;
+  grid-template-rows: var(--space-xl) 1fr;
+  grid-template-areas:
+    "header header"
+    "nav main"
+    "nav main";
+}
+
+#top {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2xs) var(--space-xs);
+}
+
+h1 {
+  font-weight: normal;
+  font-size: var(--fs-md);
+}
+
+#top > div {
+  display: flex;
+  align-items: center;
+}
+
+nav {
+  grid-area: nav;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: var(--space-m) 0;
+  gap: var(--space-m);
+}
+
+main {
+  grid-area: main;
+  border-radius: 1.5rem;
+  border: 1px solid var(--dark-grey);
+  margin: var(--space-3xs);
+}
