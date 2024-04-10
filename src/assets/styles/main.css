@@ -1,3 +1,67 @@
+#login {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#login h1 {
+  font-weight: normal;
+  font-size: var(--fs-lg);
+}
+
+#login form {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-s);
+}
+
+#login label {
+  margin-top: var(--space-s);
+  cursor: pointer;
+}
+
+#login input {
+  margin-top: var(--space-3xs);
+  outline: none;
+  border: none;
+  width: 20rem;
+  background-image: linear-gradient(
+    to right,
+    var(--black) 50%,
+    var(--dark-grey) 50%
+  );
+  background-size: 200% 1px;
+  background-repeat: no-repeat;
+  background-position: 100% 100%;
+  transition: background-position 0.3s;
+}
+
+#login input:focus {
+  outline: none;
+  background-position: 0% 100%;
+}
+
+#login .error {
+  font-size: var(--fs-sm);
+  margin-top: var(--space-3xs);
+  color: var(--red);
+}
+
+#login button {
+  background-color: var(--violet);
+  cursor: pointer;
+  color: var(--white);
+  border: none;
+  padding: var(--space-3xs) var(--space-m);
+  width: fit-content;
+  border-radius: 0.5rem;
+  margin-top: var(--space-m);
+  align-self: center;
+}
+
 #app {
   width: 100%;
   height: 100%;
@@ -18,7 +82,7 @@
   padding: var(--space-2xs) var(--space-xs);
 }
 
-h1 {
+#app h1 {
   font-weight: normal;
   font-size: var(--fs-md);
 }
@@ -42,4 +106,5 @@ main {
   border-radius: 1.5rem;
   border: 1px solid var(--dark-grey);
   margin: var(--space-3xs);
+  margin-left: 0;
 }

@@ -9,6 +9,9 @@ import Patients from "./assets/pages/Patients.tsx";
 import Folders from "./assets/pages/Folders.tsx";
 import Calendar from "./assets/pages/Calendar.tsx";
 import Settings from "./assets/pages/Settings.tsx";
+import Login from "./assets/pages/Login.tsx";
+import userStore from "./assets/store.ts";
+import { Provider } from "react-redux";
 
 const router = createBrowserRouter([
   {
@@ -37,10 +40,16 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/login",
+    element: <Login />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
+  <Provider store={userStore}>
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
+  </Provider>
 );

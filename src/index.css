@@ -92,7 +92,7 @@ body {
   height: 100vh;
 }
 
-/* https://coolors.co/bc9ddf-f9f5dc-ffffff-ced4da-141414-bce3c5-82b3ae */
+/* https://coolors.co/bc9ddf-f9f5dc-ffffff-ced4da-141414-d00000-bce3c5-82b3ae */
 /* https://boringavatars.com */
 
 :root {
@@ -124,4 +124,5 @@ body {
   --light-yellow: #f9f5dc;
   --green: #bce3c5;
   --dark-green: #82b3ae;
+  --red: #d00000;
 }
