@@ -1,4 +1,4 @@
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, FormEvent, ChangeEvent, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER_URL } from "../../config";
 import { Body, fetch } from "@tauri-apps/api/http";
@@ -22,11 +22,11 @@ function Login() {
   const [generalError, setGeneralError] = useState<Error>(SERVER_ERROR_MESSAGE);
   const [showGeneralError, setShowGeneralError] = useState(false);
   const dispatch = useAppDispatch();
-  let dataSubmitting = false;
+  let dataSubmitting = useRef(false);
 
   async function login(e: FormEvent) {
     e.preventDefault();
-    if (dataSubmitting) return;
+    if (dataSubmitting.current) return;
     setShowGeneralError(false);
     let returnFlag = false;
     if (!email) {
@@ -38,7 +38,7 @@ function Login() {
       returnFlag = true;
     }
     if (returnFlag) return;
-    dataSubmitting = true;
+    dataSubmitting.current = true;
     const response = await fetch<user>(`${SERVER_URL}/v1/auth`, {
       method: "POST",
       body: Body.json({ email, password }),
@@ -61,7 +61,7 @@ function Login() {
         setShowGeneralError(true);
       }
     }
-    dataSubmitting = false;
+    dataSubmitting.current = false;
   }
 
   function changeEmail(e: ChangeEvent<HTMLInputElement>) {
