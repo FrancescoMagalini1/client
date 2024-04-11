@@ -2,8 +2,9 @@ import { useState, FormEvent, ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER_URL } from "../../config";
 import { Body, fetch } from "@tauri-apps/api/http";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "../../hooks";
 import { logIn } from "../slices/userSlice";
+import db from "../../db";
 
 const EMPTY_ERROR_MESSAGE = "This field is required";
 const CREDENTIAL_ERROR_MESSAGE = "Wrong username or password";
@@ -26,10 +27,12 @@ function Login() {
   const [passwordError, setPasswordError] = useState(false);
   const [generalError, setGeneralError] = useState<Error>(SERVER_ERROR_MESSAGE);
   const [showGeneralError, setShowGeneralError] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
+  let dataSubmitting = false;
 
   async function login(e: FormEvent) {
     e.preventDefault();
+    if (dataSubmitting) return;
     setShowGeneralError(false);
     let returnFlag = false;
     if (!email) {
@@ -41,14 +44,19 @@ function Login() {
       returnFlag = true;
     }
     if (returnFlag) return;
+    dataSubmitting = true;
     const response = await fetch<AuthData>(`${SERVER_URL}/v1/auth`, {
       method: "POST",
       body: Body.json({ email, password }),
     });
 
     if (response.ok) {
-      console.log(response.data);
-      dispatch(logIn(response.data));
+      let user = response.data;
+      await db.execute(
+        "INSERT INTO users(id, name, surname, token) VALUES ($1, $2, $3, $4)",
+        [user.id, user.name, user.surname, user.token]
+      );
+      dispatch(logIn(user));
       navigate("/");
     } else {
       if (response.status == 400) {
@@ -59,6 +67,7 @@ function Login() {
         setShowGeneralError(true);
       }
     }
+    dataSubmitting = false;
   }
 
   function changeEmail(e: ChangeEvent<HTMLInputElement>) {

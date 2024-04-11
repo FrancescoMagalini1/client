@@ -5,6 +5,7 @@ import { Outlet, useMatches, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../../hooks";
 import { logOut } from "../slices/userSlice";
+import db from "../../db";
 
 const colors = ["#141414", "#bc9ddf", "#f9f5dc", "#bce3c5", "#82b3ae"];
 
@@ -24,14 +25,14 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(user);
     let path = matches[1]?.pathname;
     if (path) {
       setTitle(titles[path as keyof typeof titles] ?? "Home");
     }
   }, [matches]);
 
-  function logout() {
+  async function logout() {
+    await db.execute("DELETE FROM users");
     dispatch(logOut());
     navigate("/login");
   }
