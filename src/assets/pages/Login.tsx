@@ -5,19 +5,13 @@ import { Body, fetch } from "@tauri-apps/api/http";
 import { useAppDispatch } from "../../hooks";
 import { logIn } from "../slices/userSlice";
 import db from "../../db";
+import { user } from "../../typescript/types/data";
 
 const EMPTY_ERROR_MESSAGE = "This field is required";
 const CREDENTIAL_ERROR_MESSAGE = "Wrong username or password";
 const SERVER_ERROR_MESSAGE = "An unexpected error occurred";
 
 type Error = typeof CREDENTIAL_ERROR_MESSAGE | typeof SERVER_ERROR_MESSAGE;
-
-type AuthData = {
-  token: string;
-  name: string;
-  surname: string;
-  id: number;
-};
 
 function Login() {
   let navigate = useNavigate();
@@ -45,7 +39,7 @@ function Login() {
     }
     if (returnFlag) return;
     dataSubmitting = true;
-    const response = await fetch<AuthData>(`${SERVER_URL}/v1/auth`, {
+    const response = await fetch<user>(`${SERVER_URL}/v1/auth`, {
       method: "POST",
       body: Body.json({ email, password }),
     });

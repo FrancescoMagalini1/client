@@ -14,23 +14,18 @@ import Folders from "./assets/pages/Folders.tsx";
 import Calendar from "./assets/pages/Calendar.tsx";
 import Settings from "./assets/pages/Settings.tsx";
 import Login from "./assets/pages/Login.tsx";
+import Error from "./assets/pages/Error.tsx";
 import store from "./store.ts";
 import { Provider } from "react-redux";
 import { logIn } from "./assets/slices/userSlice.ts";
 import db from "./db.ts";
+import { user } from "./typescript/types/data.ts";
 
 function loginLoader() {
   const state = store.getState();
   if (state.user.isLoggedIn) return redirect("/");
   return null;
 }
-
-type user = {
-  id: number;
-  name: string;
-  surname: string;
-  token: string;
-};
 
 async function appLoader() {
   const state = store.getState();
@@ -51,6 +46,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     loader: appLoader,
+    errorElement: <Error />,
     element: <App />,
     children: [
       {
