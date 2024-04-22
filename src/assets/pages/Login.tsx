@@ -2,8 +2,7 @@ import { useState, FormEvent, ChangeEvent, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { SERVER_URL } from "../../config";
 import { Body, fetch } from "@tauri-apps/api/http";
-import { useAppDispatch } from "../../hooks";
-import { logIn } from "../slices/userSlice";
+import useUserStore from "../stores/userStore";
 import db from "../../db";
 import { user } from "../../typescript/types/data";
 
@@ -21,7 +20,7 @@ function Login() {
   const [passwordError, setPasswordError] = useState(false);
   const [generalError, setGeneralError] = useState<Error>(SERVER_ERROR_MESSAGE);
   const [showGeneralError, setShowGeneralError] = useState(false);
-  const dispatch = useAppDispatch();
+  let userLogin = useUserStore((state) => state.login);
   let dataSubmitting = useRef(false);
 
   async function login(e: FormEvent) {
@@ -38,28 +37,33 @@ function Login() {
       returnFlag = true;
     }
     if (returnFlag) return;
-    dataSubmitting.current = true;
-    const response = await fetch<user>(`${SERVER_URL}/v1/auth`, {
-      method: "POST",
-      body: Body.json({ email, password }),
-    });
+    try {
+      dataSubmitting.current = true;
+      const response = await fetch<user>(`${SERVER_URL}/v1/auth`, {
+        method: "POST",
+        body: Body.json({ email, password }),
+      });
 
-    if (response.ok) {
-      let user = response.data;
-      await db.execute(
-        "INSERT INTO users(id, name, surname, token) VALUES ($1, $2, $3, $4)",
-        [user.id, user.name, user.surname, user.token]
-      );
-      dispatch(logIn(user));
-      navigate("/");
-    } else {
-      if (response.status == 400) {
-        setGeneralError(CREDENTIAL_ERROR_MESSAGE);
-        setShowGeneralError(true);
+      if (response.ok) {
+        let user = response.data;
+        await db.execute(
+          "INSERT INTO users(id, name, surname, token) VALUES ($1, $2, $3, $4)",
+          [user.id, user.name, user.surname, user.token]
+        );
+        userLogin(user);
+        navigate("/");
       } else {
-        setGeneralError(SERVER_ERROR_MESSAGE);
-        setShowGeneralError(true);
+        if (response.status == 400) {
+          setGeneralError(CREDENTIAL_ERROR_MESSAGE);
+          setShowGeneralError(true);
+        } else {
+          setGeneralError(SERVER_ERROR_MESSAGE);
+          setShowGeneralError(true);
+        }
       }
+    } catch (error) {
+      setGeneralError(SERVER_ERROR_MESSAGE);
+      setShowGeneralError(true);
     }
     dataSubmitting.current = false;
   }

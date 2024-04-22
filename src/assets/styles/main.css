@@ -120,6 +120,16 @@ nav {
   gap: var(--space-m);
 }
 
+nav a {
+  padding: var(--space-3xs);
+  border-radius: 14px;
+  background-color: var(--white);
+}
+
+nav a.active {
+  background-color: var(--violet);
+}
+
 main {
   grid-area: main;
   border-radius: 1.5rem;

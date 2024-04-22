@@ -8,16 +8,7 @@ import { NavLink } from "react-router-dom";
 function Navbar() {
   return (
     <nav>
-      <NavLink
-        to="/"
-        style={({ isActive }) => {
-          return {
-            padding: "var(--space-3xs)",
-            borderRadius: "50%",
-            backgroundColor: isActive ? "var(--violet)" : "var(--white)",
-          };
-        }}
-      >
+      <NavLink to="/">
         {({ isActive }) => (
           <HomeIcon
             width="32px"
@@ -26,16 +17,7 @@ function Navbar() {
           />
         )}
       </NavLink>
-      <NavLink
-        to="/patients"
-        style={({ isActive }) => {
-          return {
-            padding: "var(--space-3xs)",
-            borderRadius: "50%",
-            backgroundColor: isActive ? "var(--violet)" : "var(--white)",
-          };
-        }}
-      >
+      <NavLink to="/patients">
         {({ isActive }) => (
           <PatientsIcon
             width="32px"
@@ -44,16 +26,7 @@ function Navbar() {
           />
         )}
       </NavLink>
-      <NavLink
-        to="/folders"
-        style={({ isActive }) => {
-          return {
-            padding: "var(--space-3xs)",
-            borderRadius: "50%",
-            backgroundColor: isActive ? "var(--violet)" : "var(--white)",
-          };
-        }}
-      >
+      <NavLink to="/folders">
         {({ isActive }) => (
           <FoldersIcon
             width="32px"
@@ -62,16 +35,7 @@ function Navbar() {
           />
         )}
       </NavLink>
-      <NavLink
-        to="/calendar"
-        style={({ isActive }) => {
-          return {
-            padding: "var(--space-3xs)",
-            borderRadius: "50%",
-            backgroundColor: isActive ? "var(--violet)" : "var(--white)",
-          };
-        }}
-      >
+      <NavLink to="/calendar">
         {({ isActive }) => (
           <CalendarIcon
             width="32px"
@@ -82,13 +46,8 @@ function Navbar() {
       </NavLink>
       <NavLink
         to="/settings"
-        style={({ isActive }) => {
-          return {
-            padding: "var(--space-3xs)",
-            marginTop: "auto",
-            borderRadius: "50%",
-            backgroundColor: isActive ? "var(--violet)" : "var(--white)",
-          };
+        style={{
+          marginTop: "auto",
         }}
       >
         {({ isActive }) => (
