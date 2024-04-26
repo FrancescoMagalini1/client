@@ -1,0 +1,16 @@
+.custom-input {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  background-image: linear-gradient(
+    to right,
+    var(--black) 50%,
+    var(--dark-grey) 50%
+  );
+  background-size: 200% 1px;
+  background-repeat: no-repeat;
+}
+
+.custom-input:focus {
+  outline: none;
+}

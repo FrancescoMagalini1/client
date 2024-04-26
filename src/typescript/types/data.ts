@@ -4,3 +4,13 @@ export type user = {
   surname: string;
   id: number;
 };
+
+export type patient = {
+  id: number;
+  name: string;
+  surname: string;
+  dateOfBirth: string;
+  gender: "M" | "F" | "O";
+  description: string;
+  photo: string;
+};

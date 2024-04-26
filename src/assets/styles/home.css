@@ -1,0 +1,8 @@
+#home {
+  padding: var(--space-l);
+}
+
+#home h3 {
+  font-size: var(--fs-md);
+  font-weight: normal;
+}

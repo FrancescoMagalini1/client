@@ -1,0 +1,18 @@
+.custom-select {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  padding-right: var(--space-2xs);
+  background-image: linear-gradient(
+    to right,
+    var(--black) 50%,
+    var(--dark-grey) 50%
+  );
+  background-size: 200% 1px;
+  background-repeat: no-repeat;
+}
+
+.custom-select:focus {
+  outline: none;
+  border: none;
+}

@@ -1,6 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./assets/pages/App.tsx";
+import App from "./pages/App.tsx";
 import "./index.css";
 import "./assets/styles/main.css";
 import {
@@ -8,16 +8,17 @@ import {
   RouterProvider,
   redirect,
 } from "react-router-dom";
-import Home from "./assets/pages/Home.tsx";
-import Patients from "./assets/pages/Patients.tsx";
-import Folders from "./assets/pages/Folders.tsx";
-import Calendar from "./assets/pages/Calendar.tsx";
-import Settings from "./assets/pages/Settings.tsx";
-import Login from "./assets/pages/Login.tsx";
-import Error from "./assets/pages/Error.tsx";
-import useUserStore from "./assets/stores/userStore.ts";
+import Home from "./pages/Home.tsx";
+import Patients from "./pages/Patients.tsx";
+import Folders from "./pages/Folders.tsx";
+import Calendar from "./pages/Calendar.tsx";
+import Settings from "./pages/Settings.tsx";
+import Login from "./pages/Login.tsx";
+import Error from "./pages/Error.tsx";
+import NewPatient from "./pages/NewPatient.tsx";
+import useUserStore from "./stores/userStore.ts";
 import db from "./db.ts";
-import { user } from "./typescript/types/data.ts";
+import { user, patient } from "./typescript/types/data.ts";
 
 function loginLoader() {
   if (useUserStore.getState().isLoggedIn) return redirect("/");
@@ -38,6 +39,13 @@ async function appLoader() {
   return null;
 }
 
+async function patientsLoader() {
+  const result = await db.select<patient[]>(
+    "SELECT ROWID AS 'id', name, surname, date_of_birth AS 'dateOfBirth', description, photo FROM patients ORDER BY ROWID"
+  );
+  return result;
+}
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -51,6 +59,7 @@ const router = createBrowserRouter([
       },
       {
         path: "patients",
+        loader: patientsLoader,
         element: <Patients />,
       },
       {
@@ -71,6 +80,10 @@ const router = createBrowserRouter([
     path: "/login",
     loader: loginLoader,
     element: <Login />,
+  },
+  {
+    path: "/new-patient",
+    element: <NewPatient />,
   },
   {
     path: "/error",

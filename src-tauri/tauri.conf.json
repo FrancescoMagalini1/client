@@ -16,6 +16,36 @@
         "all": true,
         "request": true,
         "scope": ["http://109.205.183.140:8083/*"]
+      },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "copyFile": true,
+        "createDir": true,
+        "removeDir": true,
+        "removeFile": true,
+        "renameFile": true,
+        "exists": true,
+        "scope": ["C:/**"]
+      },
+      "dialog": {
+        "all": true, 
+        "ask": true, 
+        "confirm": true, 
+        "message": true,
+        "open": true, 
+        "save": true 
+      },
+      "protocol": {
+        "asset": true,
+        "assetScope": [
+          "C:/**"
+        ]
       }
     },
     "bundle": {
@@ -52,7 +82,7 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "updater": {
       "active": false

@@ -1,0 +1,4 @@
+.custom-datepicker-simple {
+  display: flex;
+  gap: var(--space-l);
+}

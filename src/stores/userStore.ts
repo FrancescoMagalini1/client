@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { user } from "../../typescript/types/data";
+import { user } from "../typescript/types/data";
 
 type State = user & {
   isLoggedIn: boolean;

@@ -1,0 +1,8 @@
+.custom-textarea {
+  background-color: inherit;
+  outline: none;
+  padding: var(--space-2xs);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 14px;
+}

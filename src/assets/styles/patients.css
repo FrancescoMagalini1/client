@@ -1,0 +1,58 @@
+#patients {
+  padding: var(--space-l);
+}
+
+#patients .header {
+  display: flex;
+  align-items: center;
+}
+
+#patients .header .search {
+  display: flex;
+  flex-grow: 1;
+  margin-left: var(--space-3xl);
+}
+
+#patients .header input {
+  flex-grow: 1;
+}
+
+#patients .header label {
+  cursor: pointer;
+  padding: var(--space-3xs);
+  margin-left: var(--space-2xs);
+}
+
+#patients .header a {
+  text-decoration: none;
+  color: var(--white);
+  background-color: var(--violet);
+  padding: var(--space-3xs) var(--space-s);
+  border-radius: 14px;
+  margin: 0 var(--space-3xl);
+}
+
+#patients .content {
+  display: flex;
+  padding: var(--space-l) 0;
+  gap: var(--space-m);
+}
+
+#patients .patient-card {
+  max-width: 12rem;
+  padding: var(--space-xs);
+  background-color: var(--white);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+#patients .patient-card .avatar {
+  width: 60%;
+}
+
+#patients .patient-card .name {
+  margin-top: var(--space-2xs);
+}

@@ -1,10 +1,10 @@
 import { useState, FormEvent, ChangeEvent, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { SERVER_URL } from "../../config";
+import { SERVER_URL } from "../config";
 import { Body, fetch } from "@tauri-apps/api/http";
 import useUserStore from "../stores/userStore";
-import db from "../../db";
-import { user } from "../../typescript/types/data";
+import db from "../db";
+import { user } from "../typescript/types/data";
 
 const EMPTY_ERROR_MESSAGE = "This field is required";
 const CREDENTIAL_ERROR_MESSAGE = "Wrong username or password";

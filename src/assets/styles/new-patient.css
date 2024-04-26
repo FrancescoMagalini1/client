@@ -1,0 +1,87 @@
+#new-patient {
+  padding: var(--space-l);
+  background-color: var(--light-grey);
+  display: flex;
+  flex-direction: column;
+}
+
+#new-patient .header {
+  display: flex;
+}
+
+#new-patient .header a {
+  padding: var(--space-2xs);
+}
+
+#new-patient form {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-l);
+  width: 50%;
+  align-self: center;
+}
+
+#new-patient .avatar {
+  align-self: center;
+  width: 20%;
+  height: auto;
+  margin-top: var(--space-2xl);
+  position: relative;
+  aspect-ratio: 1 / 1;
+}
+
+#new-patient .avatar > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+#new-patient .file-picker {
+  background-color: var(--white);
+  border-radius: 50%;
+  padding: var(--space-3xs);
+  border: none;
+  outline: none;
+  position: absolute;
+  cursor: pointer;
+  bottom: 0;
+  right: 0;
+}
+
+#new-patient .delete-photo {
+  background-color: var(--white);
+  border-radius: 50%;
+  padding: var(--space-3xs);
+  border: none;
+  outline: none;
+  position: absolute;
+  cursor: pointer;
+  bottom: 0;
+  left: 0;
+}
+
+#new-patient h1 {
+  font-weight: normal;
+  font-size: var(--fs-lg);
+  align-self: center;
+  margin-top: var(--space-m);
+}
+
+#new-patient label {
+  margin-top: var(--space-m);
+  margin-bottom: var(--space-3xs);
+  cursor: pointer;
+}
+
+#new-patient form > button {
+  background-color: var(--violet);
+  cursor: pointer;
+  color: var(--white);
+  border: none;
+  padding: var(--space-3xs) var(--space-m);
+  width: fit-content;
+  border-radius: 0.5rem;
+  margin-top: var(--space-m);
+  align-self: center;
+}
