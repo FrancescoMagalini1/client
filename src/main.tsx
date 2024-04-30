@@ -7,6 +7,8 @@ import {
   createBrowserRouter,
   RouterProvider,
   redirect,
+  Params,
+  LoaderFunctionArgs,
 } from "react-router-dom";
 import Home from "./pages/Home.tsx";
 import Patients from "./pages/Patients.tsx";
@@ -15,6 +17,7 @@ import Calendar from "./pages/Calendar.tsx";
 import Settings from "./pages/Settings.tsx";
 import Login from "./pages/Login.tsx";
 import Error from "./pages/Error.tsx";
+import User from "./pages/User.tsx";
 import NewPatient from "./pages/NewPatient.tsx";
 import useUserStore from "./stores/userStore.ts";
 import db from "./db.ts";
@@ -39,11 +42,37 @@ async function appLoader() {
   return null;
 }
 
-async function patientsLoader() {
-  const result = await db.select<patient[]>(
-    "SELECT ROWID AS 'id', name, surname, date_of_birth AS 'dateOfBirth', description, photo FROM patients ORDER BY ROWID"
+async function patientsLoader({ request }: LoaderFunctionArgs) {
+  const usersPerPage = 12;
+  const result2 = await db.select<{ n: number }[]>(
+    "SELECT COUNT(*) AS n FROM patients"
   );
-  return result;
+  let pages = Math.ceil(result2[0].n / usersPerPage);
+  const url = new URL(request.url);
+  let currentPage = parseInt(url.searchParams.get("page") ?? "1");
+  currentPage = isNaN(currentPage) ? 1 : currentPage;
+  currentPage = Math.min(Math.max(currentPage, 1), pages);
+  const result1 = await db.select<patient[]>(
+    `SELECT ROWID AS 'id', name, surname, date_of_birth AS 'dateOfBirth', gender, description, photo 
+    FROM patients ORDER BY ROWID LIMIT $1 OFFSET $2`,
+    [usersPerPage, usersPerPage * (currentPage - 1)]
+  );
+  console.log(usersPerPage * (currentPage - 1), usersPerPage);
+  console.log(result1);
+  return {
+    patients: result1,
+    pages,
+    current: currentPage,
+  };
+}
+
+async function patientLoader({ params }: { params: Params<"patientId"> }) {
+  const result = await db.select<patient[]>(
+    "SELECT ROWID AS 'id', name, surname, date_of_birth AS 'dateOfBirth', gender, description, photo FROM patients WHERE ROWID=$1",
+    [params.patientId]
+  );
+  if (!result.length) return redirect("/error");
+  return result[0];
 }
 
 const router = createBrowserRouter([
@@ -51,28 +80,42 @@ const router = createBrowserRouter([
     path: "/",
     loader: appLoader,
     errorElement: <Error />,
-    element: <App />,
+    element: <User />,
     children: [
       {
-        element: <Home />,
-        index: true,
+        element: <App />,
+        children: [
+          {
+            element: <Home />,
+            index: true,
+          },
+          {
+            path: "patients",
+            loader: patientsLoader,
+            element: <Patients />,
+          },
+          {
+            path: "folders",
+            element: <Folders />,
+          },
+          {
+            path: "calendar",
+            element: <Calendar />,
+          },
+          {
+            path: "settings",
+            element: <Settings />,
+          },
+        ],
       },
       {
-        path: "patients",
-        loader: patientsLoader,
-        element: <Patients />,
+        path: "/new-patient",
+        element: <NewPatient />,
       },
       {
-        path: "folders",
-        element: <Folders />,
-      },
-      {
-        path: "calendar",
-        element: <Calendar />,
-      },
-      {
-        path: "settings",
-        element: <Settings />,
+        path: "patients/:patientId",
+        loader: patientLoader,
+        element: <NewPatient />,
       },
     ],
   },
@@ -80,10 +123,6 @@ const router = createBrowserRouter([
     path: "/login",
     loader: loginLoader,
     element: <Login />,
-  },
-  {
-    path: "/new-patient",
-    element: <NewPatient />,
   },
   {
     path: "/error",

@@ -65,10 +65,17 @@
 #error {
   width: 100%;
   height: 100%;
+  padding: var(--space-l);
+  display: flex;
+  flex-direction: column;
+}
+
+#error .message {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  flex-grow: 1;
 }
 
 #error h1 {

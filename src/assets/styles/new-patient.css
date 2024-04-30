@@ -23,17 +23,17 @@
 
 #new-patient .avatar {
   align-self: center;
-  width: 20%;
-  height: auto;
+  width: 180px;
+  height: 180px;
   margin-top: var(--space-2xl);
   position: relative;
-  aspect-ratio: 1 / 1;
 }
 
-#new-patient .avatar > img {
+#new-patient .avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: top center;
   border-radius: 50%;
 }
 
@@ -74,7 +74,12 @@
   cursor: pointer;
 }
 
-#new-patient form > button {
+#new-patient form .buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+#new-patient form button {
   background-color: var(--violet);
   cursor: pointer;
   color: var(--white);
@@ -84,4 +89,8 @@
   border-radius: 0.5rem;
   margin-top: var(--space-m);
   align-self: center;
+}
+
+#new-patient form button.delete {
+  background-color: var(--red);
 }

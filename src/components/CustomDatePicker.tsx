@@ -36,14 +36,20 @@ const initialMonth = 0;
 const initialYear = new Date().getFullYear();
 
 type props = {
+  initialDate?: number[]; // year month day
   changeFunction?: (date: string) => void;
 };
 
-function CustomDatePickerSimple({ changeFunction }: props) {
-  const [day, setDay] = useState(initialDay);
-  const [month, setMonth] = useState(initialMonth);
-  const [year, setYear] = useState(initialYear);
-  const [maxDay, setMaxDay] = useState(31);
+function CustomDatePickerSimple({ changeFunction, initialDate = [] }: props) {
+  const [day, setDay] = useState(initialDate[2] ?? initialDay);
+  const [month, setMonth] = useState(initialDate[1] ?? initialMonth);
+  const [year, setYear] = useState(initialDate[0] ?? initialYear);
+  const [maxDay, setMaxDay] = useState(
+    getNumberOfDays(
+      initialDate[0] ?? initialYear,
+      initialDate[1] ?? initialMonth
+    )
+  );
 
   const monthList = useRef(getMonthList("en-EN"));
 
@@ -85,12 +91,12 @@ function CustomDatePickerSimple({ changeFunction }: props) {
         name="day"
         min={1}
         max={maxDay}
-        initialValue={initialDay}
+        initialValue={initialDate[2] ?? initialDay}
         changeFunction={changeDay}
       />
       <CustomSelect
         data={monthList.current}
-        initialValue={initialMonth - 1}
+        initialValue={initialDate[1] ?? initialMonth}
         changeFunction={changeMonth}
         id="month"
         name="month"
@@ -99,8 +105,8 @@ function CustomDatePickerSimple({ changeFunction }: props) {
         id="year"
         name="year"
         min={1}
-        max={initialYear}
-        initialValue={initialYear}
+        max={initialDate[0] ?? initialYear}
+        initialValue={initialDate[0] ?? initialYear}
         changeFunction={changeYear}
       />
     </div>

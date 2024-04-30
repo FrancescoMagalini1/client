@@ -6,12 +6,14 @@ type props = {
   id?: string;
   name?: string;
   maxLength?: number;
+  initialValue?: string;
   changeFunction?: (e: ChangeEvent<HTMLTextAreaElement>) => void;
 };
 
 function CustomTextAreaComponent({
   id = "",
   name = "",
+  initialValue = "",
   changeFunction,
   maxLength,
 }: props) {
@@ -41,6 +43,7 @@ function CustomTextAreaComponent({
       cols={30}
       rows={10}
       maxLength={maxLength}
+      defaultValue={initialValue}
       style={{ resize: "none", ...animation.springs }}
       onFocus={focus}
       onBlur={blur}

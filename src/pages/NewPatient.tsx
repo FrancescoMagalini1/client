@@ -1,6 +1,6 @@
 import "../assets/styles/new-patient.css";
 import ArrowLeftIcon from "../components/icons/ArrowLeftIcon";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLoaderData, useNavigate } from "react-router-dom";
 import Avatar from "boring-avatars";
 import { FormEvent, useState, useCallback, ChangeEvent, useRef } from "react";
 import CustomInput from "../components/CustomInput";
@@ -12,8 +12,15 @@ import XIcon from "../components/icons/XIcon";
 import { open } from "@tauri-apps/api/dialog";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
 import db from "../db";
-import { createDir, BaseDirectory, exists, copyFile } from "@tauri-apps/api/fs";
+import {
+  createDir,
+  BaseDirectory,
+  exists,
+  copyFile,
+  removeFile,
+} from "@tauri-apps/api/fs";
 import { join, appDataDir, extname } from "@tauri-apps/api/path";
+import { patient } from "../typescript/types/data";
 
 const colors = ["#141414", "#bc9ddf", "#f9f5dc", "#bce3c5", "#82b3ae"];
 
@@ -21,11 +28,10 @@ const initialName = "John";
 const initialSurname = "Doe";
 const initialGenders = ["Female", "Male", "Other"];
 
-function formatDate(date: string) {
-  var d = new Date(date),
-    month = "" + (d.getMonth() + 1),
-    day = "" + d.getDate(),
-    year = d.getFullYear();
+function formatDate(date: Date) {
+  let month = "" + (date.getMonth() + 1),
+    day = "" + date.getDate(),
+    year = date.getFullYear();
 
   if (month.length < 2) month = "0" + month;
   if (day.length < 2) day = "0" + day;
@@ -33,47 +39,117 @@ function formatDate(date: string) {
   return [year, month, day].join("-");
 }
 
+function unpackDate(date: Date) {
+  return [date.getFullYear(), date.getMonth(), date.getDate()];
+}
+
 type gender = "F" | "M" | "O";
 
 function NewPatient() {
-  const [name, setName] = useState(initialName);
-  const [surname, setSurname] = useState(initialSurname);
-  const [photoFile, setPhotoFile] = useState("");
-  const [date, setDate] = useState("");
-  const [gender, setGender] = useState<gender>("F");
-  const [description, setDescription] = useState("");
+  const initialPatient = useLoaderData() as patient | undefined;
+  const [name, setName] = useState(initialPatient?.name ?? initialName);
+  const [surname, setSurname] = useState(
+    initialPatient?.surname ?? initialSurname
+  );
+  const [photoFile, setPhotoFile] = useState(initialPatient?.photo ?? "");
+  const [date, setDate] = useState(new Date());
+  const [gender, setGender] = useState<gender>(initialPatient?.gender ?? "F");
+  const [description, setDescription] = useState(
+    initialPatient?.description ?? ""
+  );
   let dataSubmitting = useRef(false);
   let navigate = useNavigate();
 
-  async function createPatient(e: FormEvent<HTMLFormElement>) {
+  async function createOrUpdatePatient(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (dataSubmitting.current) return;
     dataSubmitting.current = true;
     try {
-      const checkDir = await exists("patients", { dir: BaseDirectory.AppData });
+      const checkDir = await exists("patients", {
+        dir: BaseDirectory.AppData,
+      });
       if (!checkDir) {
         await createDir("patients", { dir: BaseDirectory.AppData });
       }
       let path;
-      if (photoFile) {
-        const appDataDirPath = await appDataDir();
-        const ext = await extname(photoFile);
-        path = await join(
-          appDataDirPath,
-          "patients",
-          `${name} ${surname} - ${new Date().getTime()}.${ext}`
+      if (initialPatient) {
+        if (initialPatient.photo != photoFile) {
+          if (photoFile) {
+            const appDataDirPath = await appDataDir();
+            const ext = await extname(photoFile);
+            path = await join(
+              appDataDirPath,
+              "patients",
+              `${name} ${surname} - ${new Date().getTime()}.${ext}`
+            );
+            await copyFile(photoFile, path);
+          }
+          if (initialPatient.photo) {
+            const checkFile = await exists(initialPatient.photo);
+            if (checkFile) {
+              await removeFile(initialPatient.photo);
+            }
+          }
+        }
+        await db.execute(
+          "UPDATE patients SET name=$1, surname=$2, date_of_birth=$3, gender=$4, description=$5, photo=$6 WHERE ROWID=$7",
+          [
+            name,
+            surname,
+            formatDate(date),
+            gender,
+            description,
+            initialPatient.photo != photoFile
+              ? path ?? ""
+              : initialPatient.photo,
+            initialPatient.id,
+          ]
         );
-        await copyFile(photoFile, path);
       } else {
-        path = "";
+        if (photoFile) {
+          const appDataDirPath = await appDataDir();
+          const ext = await extname(photoFile);
+          path = await join(
+            appDataDirPath,
+            "patients",
+            `${name} ${surname} - ${new Date().getTime()}.${ext}`
+          );
+          await copyFile(photoFile, path);
+        } else {
+          path = "";
+        }
+        await db.execute(
+          "INSERT INTO patients (name, surname, date_of_birth, gender, description, photo) VALUES ($1, $2, $3, $4, $5, $6)",
+          [name, surname, formatDate(date), gender, description, path]
+        );
       }
-      await db.execute(
-        "INSERT INTO patients (name, surname, date_of_birth, gender, description, photo) VALUES ($1, $2, $3, $4, $5, $6)",
-        [name, surname, formatDate(date), gender, description, photoFile]
-      );
       navigate("/patients");
     } catch (error) {
       console.error(error);
+      navigate("/error");
+    }
+    dataSubmitting.current = false;
+  }
+
+  async function deletePatient() {
+    if (dataSubmitting.current) return;
+    dataSubmitting.current = true;
+    try {
+      if (initialPatient) {
+        if (initialPatient.photo) {
+          const checkFile = await exists(initialPatient.photo);
+          if (checkFile) {
+            await removeFile(initialPatient.photo);
+          }
+        }
+        await db.execute("DELETE FROM patients WHERE ROWID=$1", [
+          initialPatient.id,
+        ]);
+        navigate("/patients");
+      }
+    } catch (error) {
+      console.error(error);
+      navigate("/error");
     }
     dataSubmitting.current = false;
   }
@@ -88,7 +164,7 @@ function NewPatient() {
     []
   );
 
-  let changeDate = useCallback((str: string) => setDate(str), []);
+  let changeDate = useCallback((str: string) => setDate(new Date(str)), []);
 
   let changeGender = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     switch (e.target.value) {
@@ -115,7 +191,7 @@ function NewPatient() {
       filters: [
         {
           name: "Image",
-          extensions: ["png", "jpeg"],
+          extensions: ["png", "jpeg", "jpg"],
         },
       ],
     });
@@ -132,11 +208,12 @@ function NewPatient() {
         </Link>
       </div>
 
-      <form action="" onSubmit={createPatient} autoComplete="off">
+      <form action="" onSubmit={createOrUpdatePatient} autoComplete="off">
         <div className="avatar">
           {photoFile ? (
             <>
               <img src={convertFileSrc(photoFile)} />
+
               <button
                 type="button"
                 className="delete-photo"
@@ -166,7 +243,7 @@ function NewPatient() {
           id="name"
           name="name"
           maxLength={200}
-          initialValue={initialName}
+          initialValue={initialPatient?.name ?? initialName}
           changeFunction={changeName}
         />
         <label htmlFor="surname">Surname</label>
@@ -175,14 +252,22 @@ function NewPatient() {
           id="surname"
           name="surname"
           maxLength={200}
-          initialValue={initialSurname}
+          initialValue={initialPatient?.surname ?? initialSurname}
           changeFunction={changeSurname}
         />
         <label htmlFor="date-of-birth">Date of Birth</label>
-        <CustomDatePickerSimple changeFunction={changeDate} />
+        <CustomDatePickerSimple
+          changeFunction={changeDate}
+          initialDate={
+            initialPatient?.dateOfBirth
+              ? unpackDate(new Date(initialPatient?.dateOfBirth))
+              : []
+          }
+        />
         <label htmlFor="gender">Gender</label>
         <CustomSelect
           data={initialGenders}
+          initialValue={["F", "M", "O"].indexOf(initialPatient?.gender ?? "F")}
           id="gender"
           name="gender"
           changeFunction={changeGender}
@@ -191,10 +276,20 @@ function NewPatient() {
         <CustomTextArea
           id="description"
           name="description"
+          initialValue={initialPatient?.description ?? ""}
           maxLength={2000}
           changeFunction={changeDescription}
         />
-        <button>Add new Patient</button>
+        {initialPatient ? (
+          <div className="buttons">
+            <button className="delete" type="button" onClick={deletePatient}>
+              Delete Patient
+            </button>
+            <button>Update Patient</button>
+          </div>
+        ) : (
+          <button>Add new Patient</button>
+        )}
       </form>
     </div>
   );
