@@ -28,6 +28,27 @@ fn main() {
                 );",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 3,
+            description: "create_fts_index",
+            sql: "
+            CREATE VIRTUAL TABLE patients_fts USING fts5(name, surname, description, content=patients, tokenize=\"trigram\");
+
+            INSERT INTO patients_fts(ROWID, name, surname, description) SELECT ROWID, name, surname, description FROM patients;
+            
+            CREATE TRIGGER patients_fts_ai AFTER INSERT ON patients BEGIN
+              INSERT INTO patients_fts(ROWID, name, surname, description) VALUES (new.ROWID, new.name, new.surname, new.description);
+            END;
+            CREATE TRIGGER patients_fts_ad AFTER DELETE ON patients BEGIN
+              INSERT INTO patients_fts(patients_fts, ROWID, name, surname, description) VALUES('delete', old.ROWID, old.name, old.surname, old.description);
+            END;
+            CREATE TRIGGER patients_fts_au AFTER UPDATE ON patients BEGIN
+              INSERT INTO patients_fts(patients_fts, ROWID, name, surname, description) VALUES('delete', old.ROWID, old.name, old.surname, old.description);
+              INSERT INTO patients_fts(ROWID, name, surname, description) VALUES (new.ROWID, new.name, new.surname, new.description);
+            END;
+            ",
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()

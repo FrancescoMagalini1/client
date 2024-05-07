@@ -13,29 +13,35 @@ function Patients() {
     patients,
     pages,
     current: currentPage,
+    query: searchQuery,
   } = useLoaderData() as {
     patients: patient[];
     pages: number;
     current: number;
+    query: string;
   };
   let navigate = useNavigate();
 
   function changePage(page: number) {
-    if (page != currentPage) navigate(`/patients?page=${page}`);
+    if (page != currentPage)
+      navigate(`/patients?q=${searchQuery}&page=${page}`);
   }
 
   return (
     <div id="patients">
       <div className="header">
         <div className="search">
-          <CustomInput
-            type="search"
-            id="search-patients"
-            name="search-patients"
-          />
-          <label htmlFor="search-patients">
-            <SearchIcon />
-          </label>
+          <form id="search-form" role="search">
+            <CustomInput
+              type="search"
+              id="q"
+              name="q"
+              initialValue={searchQuery}
+            />
+            <label htmlFor="q">
+              <SearchIcon />
+            </label>
+          </form>
         </div>
         <Link to="/new-patient">Add a new Patient</Link>
       </div>

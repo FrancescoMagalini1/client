@@ -22,6 +22,11 @@
   flex-grow: 1;
 }
 
+#patients .header form {
+  display: flex;
+  flex-grow: 1;
+}
+
 #patients .header label {
   cursor: pointer;
   padding: var(--space-3xs);

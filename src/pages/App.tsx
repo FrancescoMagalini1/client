@@ -25,7 +25,7 @@ function App() {
   };
 
   useEffect(() => {
-    let path = matches[1]?.pathname;
+    let path = matches[2]?.pathname;
     if (path) {
       setTitle(titles[path as keyof typeof titles] ?? "Home");
     }

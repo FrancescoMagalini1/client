@@ -44,25 +44,48 @@ async function appLoader() {
 
 async function patientsLoader({ request }: LoaderFunctionArgs) {
   const usersPerPage = 12;
-  const result2 = await db.select<{ n: number }[]>(
-    "SELECT COUNT(*) AS n FROM patients"
-  );
-  let pages = Math.ceil(result2[0].n / usersPerPage);
   const url = new URL(request.url);
+  const query = url.searchParams.get("q") ?? "";
+  let q = query;
+  if (q) q = "%" + q + "%";
+  let result2;
+  if (q) {
+    result2 = await db.select<{ n: number }[]>(
+      "SELECT COUNT(*) AS n FROM patients_fts WHERE name LIKE $1 OR surname LIKE $1 OR description LIKE $1",
+      [q]
+    );
+  } else {
+    result2 = await db.select<{ n: number }[]>(
+      "SELECT COUNT(*) AS n FROM patients"
+    );
+  }
+  let pages = Math.ceil(result2[0].n / usersPerPage);
   let currentPage = parseInt(url.searchParams.get("page") ?? "1");
   currentPage = isNaN(currentPage) ? 1 : currentPage;
-  currentPage = Math.min(Math.max(currentPage, 1), pages);
-  const result1 = await db.select<patient[]>(
-    `SELECT ROWID AS 'id', name, surname, date_of_birth AS 'dateOfBirth', gender, description, photo 
-    FROM patients ORDER BY ROWID LIMIT $1 OFFSET $2`,
-    [usersPerPage, usersPerPage * (currentPage - 1)]
-  );
-  console.log(usersPerPage * (currentPage - 1), usersPerPage);
-  console.log(result1);
+  currentPage = Math.min(Math.max(currentPage, 1), pages) || 1;
+  let result1;
+  if (q) {
+    result1 = await db.select<patient[]>(
+      `SELECT patients.ROWID AS 'id', patients.name, patients.surname, patients.date_of_birth AS 'dateOfBirth', 
+      patients.gender, patients.description, patients.photo
+      FROM patients INNER JOIN patients_fts ON patients.ROWID = patients_fts.ROWID
+      WHERE patients_fts.name LIKE $1 OR patients_fts.surname LIKE $1 OR patients_fts.description LIKE $1
+      ORDER BY rank LIMIT $2 OFFSET $3`,
+      [q, usersPerPage, usersPerPage * (currentPage - 1)]
+    );
+  } else {
+    result1 = await db.select<patient[]>(
+      `SELECT ROWID AS 'id', name, surname, date_of_birth AS 'dateOfBirth', gender, description, photo 
+      FROM patients ORDER BY ROWID LIMIT $1 OFFSET $2`,
+      [usersPerPage, usersPerPage * (currentPage - 1)]
+    );
+  }
+
   return {
     patients: result1,
     pages,
     current: currentPage,
+    query,
   };
 }
 
