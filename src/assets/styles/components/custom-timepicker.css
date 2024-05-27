@@ -1,0 +1,4 @@
+.custom-timepicker-simple {
+  display: flex;
+  gap: var(--space-m);
+}

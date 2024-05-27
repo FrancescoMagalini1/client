@@ -1,4 +1,4 @@
-import "../assets/styles/custom-datepicker.css";
+import "../assets/styles/components/custom-datepicker.css";
 import CustomNumberInput from "./CustomNumberInput";
 import CustomSelect from "./CustomSelect";
 import { ChangeEvent, useCallback, useState, useRef, useEffect } from "react";
@@ -37,7 +37,7 @@ const initialYear = new Date().getFullYear();
 
 type props = {
   initialDate?: number[]; // year month day
-  changeFunction?: (date: string) => void;
+  changeFunction?: (date: Date | null) => void;
 };
 
 function CustomDatePickerSimple({ changeFunction, initialDate = [] }: props) {
@@ -54,6 +54,10 @@ function CustomDatePickerSimple({ changeFunction, initialDate = [] }: props) {
   const monthList = useRef(getMonthList("en-EN"));
 
   let changeDay = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      if (changeFunction) changeFunction(null);
+      return;
+    }
     let value = Number(e.target.value);
     if (!isNaN(value)) {
       setDay(value);
@@ -66,8 +70,7 @@ function CustomDatePickerSimple({ changeFunction, initialDate = [] }: props) {
 
   useEffect(() => {
     let date = new Date(year, month, day);
-    if (!isNaN(date.getTime()) && changeFunction)
-      changeFunction(date.toISOString());
+    if (!isNaN(date.getTime()) && changeFunction) changeFunction(date);
   }, [year, month, day]);
 
   let changeMonth = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
@@ -78,6 +81,10 @@ function CustomDatePickerSimple({ changeFunction, initialDate = [] }: props) {
   }, []);
 
   let changeYear = useCallback((e: ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.value) {
+      if (changeFunction) changeFunction(null);
+      return;
+    }
     let value = Number(e.target.value);
     if (!isNaN(value)) {
       setYear(value);

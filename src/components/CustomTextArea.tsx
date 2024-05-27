@@ -1,5 +1,5 @@
 import { ChangeEvent, memo } from "react";
-import "../assets/styles/custom-textarea.css";
+import "../assets/styles/components/custom-textarea.css";
 import { animated, useSpringRef, Controller } from "@react-spring/web";
 
 type props = {

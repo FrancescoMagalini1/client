@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, memo } from "react";
-import "../assets/styles/custom-input.css";
+import "../assets/styles/components/custom-input.css";
 import { animated, useSpringRef, Controller } from "@react-spring/web";
 
 type inputProps = {

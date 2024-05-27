@@ -1,0 +1,38 @@
+.patients-input > .custom-input {
+  width: 100%;
+}
+
+.patients-input > .selected-patients {
+  margin-top: var(--space-xs);
+}
+
+.patients-input > .selected-patients > .item {
+  margin-top: var(--space-2xs);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.patients-input > .selected-patients p {
+  color: var(--violet);
+}
+
+.patients-input > .selected-patients button {
+  background-color: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+.patients-input > .patients-search-result {
+  margin-top: var(--space-s);
+}
+
+.patients-input > .patients-search-result > .item {
+  margin-top: var(--space-2xs);
+  cursor: pointer;
+}
+
+.patients-input > .patients-search-result > .item:hover > p {
+  color: var(--violet);
+}

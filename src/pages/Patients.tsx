@@ -43,7 +43,7 @@ function Patients() {
             </label>
           </form>
         </div>
-        <Link to="/new-patient">Add a new Patient</Link>
+        <Link to="/patients/new">Add a new Patient</Link>
       </div>
       <div className="content">
         {patients.map((patient) => (

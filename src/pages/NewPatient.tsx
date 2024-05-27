@@ -21,27 +21,13 @@ import {
 } from "@tauri-apps/api/fs";
 import { join, appDataDir, extname } from "@tauri-apps/api/path";
 import { patient } from "../typescript/types/data";
+import { unpackDate, formatDate } from "../utils";
 
 const colors = ["#141414", "#bc9ddf", "#f9f5dc", "#bce3c5", "#82b3ae"];
 
 const initialName = "John";
 const initialSurname = "Doe";
 const initialGenders = ["Female", "Male", "Other"];
-
-function formatDate(date: Date) {
-  let month = "" + (date.getMonth() + 1),
-    day = "" + date.getDate(),
-    year = date.getFullYear();
-
-  if (month.length < 2) month = "0" + month;
-  if (day.length < 2) day = "0" + day;
-
-  return [year, month, day].join("-");
-}
-
-function unpackDate(date: Date) {
-  return [date.getFullYear(), date.getMonth(), date.getDate()];
-}
 
 type gender = "F" | "M" | "O";
 
@@ -52,7 +38,7 @@ function NewPatient() {
     initialPatient?.surname ?? initialSurname
   );
   const [photoFile, setPhotoFile] = useState(initialPatient?.photo ?? "");
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date | null>(new Date());
   const [gender, setGender] = useState<gender>(initialPatient?.gender ?? "F");
   const [description, setDescription] = useState(
     initialPatient?.description ?? ""
@@ -64,6 +50,7 @@ function NewPatient() {
     e.preventDefault();
     if (dataSubmitting.current) return;
     dataSubmitting.current = true;
+    if (date == null || !name || !surname) return;
     try {
       const checkDir = await exists("patients", {
         dir: BaseDirectory.AppData,
@@ -164,7 +151,7 @@ function NewPatient() {
     []
   );
 
-  let changeDate = useCallback((str: string) => setDate(new Date(str)), []);
+  let changeDate = useCallback((date: Date | null) => setDate(date), []);
 
   let changeGender = useCallback((e: ChangeEvent<HTMLSelectElement>) => {
     switch (e.target.value) {

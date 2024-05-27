@@ -1,5 +1,5 @@
 import { ChangeEvent, memo, useRef } from "react";
-import "../assets/styles/custom-select.css";
+import "../assets/styles/components/custom-select.css";
 import { animated, useSpringRef, Controller } from "@react-spring/web";
 
 type props = {

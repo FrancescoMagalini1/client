@@ -49,6 +49,17 @@ fn main() {
             ",
             kind: MigrationKind::Up,
         },
+        Migration {
+            version: 4,
+            description: "create_appointments",
+            sql: "CREATE TABLE IF NOT EXISTS appointments(
+                start_time TEXT NOT NULL,
+                end_time TEXT NOT NULL,
+                patients TEXT NOT NULL,
+                description TEXT NOT NULL
+                );",
+            kind: MigrationKind::Up,
+        },
     ];
 
     tauri::Builder::default()

@@ -1,0 +1,61 @@
+#calendar {
+  padding: var(--space-l) var(--space-l) 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#calendar .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#calendar .header h3 {
+  font-weight: normal;
+}
+
+#calendar .header .navigation {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+#calendar .header .navigation button {
+  background-color: var(--white);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: var(--space-3xs) var(--space-2xs);
+}
+
+#calendar .header .navigation button.today {
+  background-color: var(--violet);
+}
+
+#calendar h2 {
+  margin-top: var(--space-m);
+  font-weight: normal;
+  font-size: var(--fs-md);
+}
+
+#calendar .content {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+#calendar .content a.no-appointments {
+  color: var(--white);
+  background-color: var(--violet);
+  outline: none;
+  border: none;
+  text-decoration: none;
+  margin-top: var(--space-m);
+  padding: var(--space-3xs) var(--space-s);
+  border-radius: 14px;
+}
