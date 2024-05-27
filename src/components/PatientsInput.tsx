@@ -29,10 +29,14 @@ function PatientsInputComponent({ id = "", changeFunction }: inputProps) {
       setPatientSearchList([]);
       return;
     }
-    q = "%" + q + "%";
+    //q = "%" + q + "%";
+    q = q
+      .split(/\s/)
+      .map((s) => '"' + s + '"')
+      .join(" OR ");
     let result = await db.select<patientSearch[]>(
       `SELECT ROWID AS id, name, surname FROM patients_fts 
-        WHERE name LIKE $1 OR surname LIKE $1
+        WHERE patients_fts = $1
         ORDER BY rank LIMIT $2`,
       [q, 10]
     );
