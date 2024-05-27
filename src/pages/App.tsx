@@ -5,8 +5,7 @@ import { Outlet, useMatches, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useUserStore from "../stores/userStore";
 import db from "../db";
-
-const colors = ["#141414", "#bc9ddf", "#f9f5dc", "#bce3c5", "#82b3ae"];
+import { colors } from "../utils";
 
 function App() {
   let [title, setTitle] = useState("Home");

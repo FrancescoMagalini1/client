@@ -1,0 +1,66 @@
+#patient {
+  padding: var(--space-l);
+  background-color: var(--light-grey);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+#patient .header {
+  display: flex;
+}
+
+#patient .header a {
+  padding: var(--space-2xs);
+}
+
+#patient .content {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-l);
+  width: 50%;
+  align-self: center;
+}
+
+#patient .avatar {
+  align-self: center;
+  width: 180px;
+  height: 180px;
+  margin-top: var(--space-2xl);
+  position: relative;
+}
+
+#patient .avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: 50%;
+}
+
+#patient h1 {
+  font-weight: normal;
+  font-size: var(--fs-lg);
+  align-self: center;
+  margin-top: var(--space-m);
+}
+
+#patient h3 {
+  margin-top: var(--space-m);
+  margin-bottom: var(--space-3xs);
+  font-weight: normal;
+  font-size: var(--fs-md);
+}
+
+#patient .content a {
+  background-color: var(--violet);
+  cursor: pointer;
+  color: var(--white);
+  border: none;
+  padding: var(--space-3xs) var(--space-m);
+  width: fit-content;
+  border-radius: 0.5rem;
+  margin-top: var(--space-m);
+  align-self: center;
+  text-decoration: none;
+}

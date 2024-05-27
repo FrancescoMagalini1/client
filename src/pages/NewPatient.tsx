@@ -22,8 +22,8 @@ import {
 import { join, appDataDir, extname } from "@tauri-apps/api/path";
 import { patient } from "../typescript/types/data";
 import { unpackDate, formatDate } from "../utils";
-
-const colors = ["#141414", "#bc9ddf", "#f9f5dc", "#bce3c5", "#82b3ae"];
+import { colors } from "../utils";
+import ConfirmationModal from "../components/ConfirmationModal";
 
 const initialName = "John";
 const initialSurname = "Doe";
@@ -33,6 +33,7 @@ type gender = "F" | "M" | "O";
 
 function NewPatient() {
   const initialPatient = useLoaderData() as patient | undefined;
+  const [showModal, setShowModal] = useState(false);
   const [name, setName] = useState(initialPatient?.name ?? initialName);
   const [surname, setSurname] = useState(
     initialPatient?.surname ?? initialSurname
@@ -188,97 +189,118 @@ function NewPatient() {
   }
 
   return (
-    <div id="new-patient">
-      <div className="header">
-        <Link to="/patients">
-          <ArrowLeftIcon />
-        </Link>
-      </div>
-
-      <form action="" onSubmit={createOrUpdatePatient} autoComplete="off">
-        <div className="avatar">
-          {photoFile ? (
-            <>
-              <img src={convertFileSrc(photoFile)} />
-
-              <button
-                type="button"
-                className="delete-photo"
-                onClick={() => setPhotoFile("")}
-              >
-                <XIcon />
-              </button>
-            </>
-          ) : (
-            <Avatar
-              name={name + " " + surname}
-              colors={colors}
-              variant="beam"
-              size="100%"
-            />
-          )}
-          <button type="button" className="file-picker" onClick={changeAvatar}>
-            <PhotoIcon />
-          </button>
+    <>
+      <ConfirmationModal
+        show={showModal}
+        message="Are you really sure you want to permanently remove this patient?"
+        noCallback={() => setShowModal(false)}
+        yesCallback={() => {
+          setShowModal(false);
+          deletePatient();
+        }}
+      />
+      <div id="new-patient">
+        <div className="header">
+          <Link to="/patients">
+            <ArrowLeftIcon />
+          </Link>
         </div>
-        <h1>
-          {name} {surname}
-        </h1>
-        <label htmlFor="name">Name</label>
-        <CustomInput
-          type="search"
-          id="name"
-          name="name"
-          maxLength={200}
-          initialValue={initialPatient?.name ?? initialName}
-          changeFunction={changeName}
-        />
-        <label htmlFor="surname">Surname</label>
-        <CustomInput
-          type="search"
-          id="surname"
-          name="surname"
-          maxLength={200}
-          initialValue={initialPatient?.surname ?? initialSurname}
-          changeFunction={changeSurname}
-        />
-        <label htmlFor="date-of-birth">Date of Birth</label>
-        <CustomDatePickerSimple
-          changeFunction={changeDate}
-          initialDate={
-            initialPatient?.dateOfBirth
-              ? unpackDate(new Date(initialPatient?.dateOfBirth))
-              : []
-          }
-        />
-        <label htmlFor="gender">Gender</label>
-        <CustomSelect
-          data={initialGenders}
-          initialValue={["F", "M", "O"].indexOf(initialPatient?.gender ?? "F")}
-          id="gender"
-          name="gender"
-          changeFunction={changeGender}
-        />
-        <label htmlFor="description">Description</label>
-        <CustomTextArea
-          id="description"
-          name="description"
-          initialValue={initialPatient?.description ?? ""}
-          maxLength={2000}
-          changeFunction={changeDescription}
-        />
-        {initialPatient ? (
-          <div className="buttons">
-            <button className="delete" type="button" onClick={deletePatient}>
-              Delete Patient
+
+        <form action="" onSubmit={createOrUpdatePatient} autoComplete="off">
+          <div className="avatar">
+            {photoFile ? (
+              <>
+                <img src={convertFileSrc(photoFile)} />
+
+                <button
+                  type="button"
+                  className="delete-photo"
+                  onClick={() => setPhotoFile("")}
+                >
+                  <XIcon />
+                </button>
+              </>
+            ) : (
+              <Avatar
+                name={name + " " + surname}
+                colors={colors}
+                variant="beam"
+                size="100%"
+              />
+            )}
+            <button
+              type="button"
+              className="file-picker"
+              onClick={changeAvatar}
+            >
+              <PhotoIcon />
             </button>
-            <button>Update Patient</button>
           </div>
-        ) : (
-          <button>Add new Patient</button>
-        )}
-      </form>
-    </div>
+          <h1>
+            {name} {surname}
+          </h1>
+          <label htmlFor="name">Name</label>
+          <CustomInput
+            type="search"
+            id="name"
+            name="name"
+            maxLength={200}
+            initialValue={initialPatient?.name ?? initialName}
+            changeFunction={changeName}
+          />
+          <label htmlFor="surname">Surname</label>
+          <CustomInput
+            type="search"
+            id="surname"
+            name="surname"
+            maxLength={200}
+            initialValue={initialPatient?.surname ?? initialSurname}
+            changeFunction={changeSurname}
+          />
+          <label htmlFor="date-of-birth">Date of Birth</label>
+          <CustomDatePickerSimple
+            changeFunction={changeDate}
+            initialDate={
+              initialPatient?.dateOfBirth
+                ? unpackDate(new Date(initialPatient?.dateOfBirth))
+                : []
+            }
+          />
+          <label htmlFor="gender">Gender</label>
+          <CustomSelect
+            data={initialGenders}
+            initialValue={["F", "M", "O"].indexOf(
+              initialPatient?.gender ?? "F"
+            )}
+            id="gender"
+            name="gender"
+            changeFunction={changeGender}
+          />
+          <label htmlFor="description">Description</label>
+          <CustomTextArea
+            id="description"
+            name="description"
+            initialValue={initialPatient?.description ?? ""}
+            maxLength={2000}
+            changeFunction={changeDescription}
+          />
+          {initialPatient ? (
+            <div className="buttons">
+              <button
+                className="delete"
+                type="button"
+                onClick={() => setShowModal(true)}
+              >
+                Delete Patient
+              </button>
+              <button>Update Patient</button>
+            </div>
+          ) : (
+            <button>Add new Patient</button>
+          )}
+        </form>
+      </div>
+    </>
   );
 }
 

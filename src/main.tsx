@@ -18,6 +18,7 @@ import Settings from "./pages/Settings.tsx";
 import Login from "./pages/Login.tsx";
 import Error from "./pages/Error.tsx";
 import User from "./pages/User.tsx";
+import Patient from "./pages/Patient.tsx";
 import NewPatient from "./pages/NewPatient.tsx";
 import NewAppointment from "./pages/NewAppointment.tsx";
 import useUserStore from "./stores/userStore.ts";
@@ -138,6 +139,11 @@ const router = createBrowserRouter([
       },
       {
         path: "patients/:patientId",
+        loader: patientLoader,
+        element: <Patient />,
+      },
+      {
+        path: "patients/:patientId/edit",
         loader: patientLoader,
         element: <NewPatient />,
       },

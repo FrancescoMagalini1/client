@@ -12,3 +12,5 @@ export function formatDate(date: Date) {
 
   return [year, month, day].join("-");
 }
+
+export const colors = ["#141414", "#bc9ddf", "#f9f5dc", "#bce3c5", "#82b3ae"];

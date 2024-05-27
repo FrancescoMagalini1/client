@@ -1,0 +1,60 @@
+#confirmation-modal {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: -10;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+#confirmation-modal.show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+:root:has(#confirmation-modal.show) {
+  overflow-y: hidden;
+}
+
+#confirmation-modal .content {
+  min-width: 50%;
+  min-height: 30%;
+  border-radius: 14px;
+  padding: var(--space-m);
+  background-color: var(--white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#confirmation-modal h3 {
+  font-weight: normal;
+  font-size: var(--fs-md);
+  margin-bottom: var(--space-2xs);
+}
+
+#confirmation-modal .buttons {
+  margin-top: var(--space-s);
+  display: flex;
+  justify-content: space-around;
+}
+
+#confirmation-modal button {
+  background-color: var(--violet);
+  cursor: pointer;
+  color: var(--white);
+  border: none;
+  padding: var(--space-3xs) var(--space-m);
+  width: fit-content;
+  border-radius: 0.5rem;
+  margin-top: var(--space-m);
+  align-self: center;
+}
+
+#confirmation-modal button.delete {
+  background-color: var(--red);
+}

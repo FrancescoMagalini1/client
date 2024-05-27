@@ -5,8 +5,7 @@ import CustomInput from "../components/CustomInput";
 import { patient } from "../typescript/types/data";
 import Avatar from "boring-avatars";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
-
-const colors = ["#141414", "#bc9ddf", "#f9f5dc", "#bce3c5", "#82b3ae"];
+import { colors } from "../utils";
 
 function Patients() {
   const {
