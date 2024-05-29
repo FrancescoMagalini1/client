@@ -14,3 +14,19 @@ export type patient = {
   description: string;
   photo: string;
 };
+
+export type appointmentSQLite = {
+  id: number;
+  startDateTime: string;
+  endDateTime: string;
+  patients: string;
+  description: string;
+};
+
+export type appointment = {
+  id: number;
+  startDateTime: string;
+  endDateTime: string;
+  patients: patient[];
+  description: string;
+};

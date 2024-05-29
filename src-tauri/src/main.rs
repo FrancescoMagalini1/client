@@ -53,11 +53,13 @@ fn main() {
             version: 4,
             description: "create_appointments",
             sql: "CREATE TABLE IF NOT EXISTS appointments(
-                start_time TEXT NOT NULL,
-                end_time TEXT NOT NULL,
+                start_datetime TEXT NOT NULL CHECK(datetime(start_datetime, '+0 days') IS start_datetime),
+                end_datetime TEXT NOT NULL CHECK(datetime(end_datetime, '+0 days') IS end_datetime),
                 patients TEXT NOT NULL,
-                description TEXT NOT NULL
-                );",
+                description TEXT NOT NULL CHECK(length(description) <= 2000)
+                );
+                
+                CREATE INDEX idx_appointments_start_datetime ON appointments(start_datetime);",
             kind: MigrationKind::Up,
         },
     ];

@@ -28,7 +28,7 @@
   cursor: pointer;
 }
 
-#new-appointment form button {
+#new-appointment form > button {
   background-color: var(--violet);
   cursor: pointer;
   color: var(--white);

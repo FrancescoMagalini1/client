@@ -1,5 +1,5 @@
 import "../assets/styles/new-appointment.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ArrowLeftIcon from "../components/icons/ArrowLeftIcon";
 import { FormEvent, useState, useCallback, ChangeEvent, useRef } from "react";
 import CustomDatePickerSimple from "../components/CustomDatePicker";
@@ -7,8 +7,9 @@ import CustomTimePickerSimple from "../components/CustomTimePickerSimple";
 import CustomNumberInput from "../components/CustomNumberInput";
 import CustomTextArea from "../components/CustomTextArea";
 import PatientsInput from "../components/PatientsInput";
-import { unpackDate } from "../utils";
+import { unpackDate, formatDateTime } from "../utils";
 import useAppStore from "../stores/appStore";
+import db from "../db";
 
 const initialTime = [8, 0];
 const initialDuration = 60;
@@ -21,9 +22,35 @@ function NewAppointment() {
   const [patients, setPatients] = useState<number[]>([]);
   const [description, setDescription] = useState("");
   const dataSubmitting = useRef(false);
+  let navigate = useNavigate();
 
   async function createAppointment(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (dataSubmitting.current) return;
+    if (!startDate || !startTime || !duration || !patients.length) return;
+    dataSubmitting.current = true;
+    try {
+      let startDateTime = new Date(startDate);
+      startDateTime.setHours(startTime[0], startTime[1], 0);
+      let endDateTime = new Date(startDateTime.getTime() + duration * 60000);
+      console.log(startDateTime, formatDateTime(startDateTime));
+      console.log(endDateTime, formatDateTime(endDateTime));
+      await db.execute(
+        "INSERT INTO appointments (start_datetime, end_datetime, patients, description) VALUES($1, $2, $3, $4)",
+        [
+          formatDateTime(startDateTime),
+          formatDateTime(endDateTime),
+          JSON.stringify(patients),
+          description,
+        ]
+      );
+      navigate("/calendar");
+    } catch (error) {
+      console.error(error);
+      dataSubmitting.current = false;
+      navigate("/error");
+    }
+    dataSubmitting.current = false;
   }
 
   let changeStartDate = useCallback(

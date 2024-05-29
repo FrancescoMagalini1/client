@@ -50,8 +50,8 @@ function NewPatient() {
   async function createOrUpdatePatient(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (dataSubmitting.current) return;
-    dataSubmitting.current = true;
     if (date == null || !name || !surname) return;
+    dataSubmitting.current = true;
     try {
       const checkDir = await exists("patients", {
         dir: BaseDirectory.AppData,
