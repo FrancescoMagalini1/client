@@ -30,16 +30,27 @@ function PatientsInputComponent({ id = "", changeFunction }: inputProps) {
       return;
     }
     //q = "%" + q + "%";
-    q = q
-      .split(/\s/)
-      .map((s) => '"' + s + '"')
-      .join(" OR ");
-    let result = await db.select<patientSearch[]>(
-      `SELECT ROWID AS id, name, surname FROM patients_fts 
+    let result;
+    if (q.length >= 3) {
+      q = q
+        .split(/\s/)
+        .map((s) => '"' + s + '"')
+        .join(" OR ");
+      result = await db.select<patientSearch[]>(
+        `SELECT ROWID AS id, name, surname FROM patients_fts 
         WHERE patients_fts = $1
         ORDER BY rank LIMIT $2`,
-      [q, 10]
-    );
+        [q, 10]
+      );
+    } else {
+      q = "%" + q + "%";
+      result = await db.select<patientSearch[]>(
+        `SELECT ROWID AS id, name, surname FROM patients_fts 
+          WHERE name LIKE $1 OR surname LIKE $1
+          ORDER BY rank LIMIT $2`,
+        [q, 10]
+      );
+    }
 
     setPatientSearchList(result);
   }

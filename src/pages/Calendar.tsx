@@ -284,7 +284,7 @@ function Calendar() {
               {weekData.map((day) => (
                 <p className="week-day">{format(day, "E")}</p>
               ))}
-              {fullMonthData.map((day, i) => (
+              {fullMonthData.map((day) => (
                 <div
                   onClick={() => {
                     setDate(day);
@@ -295,7 +295,7 @@ function Calendar() {
                     isSameMonth(day, monthData[0])
                       ? isSameDay(day, date)
                         ? "selected"
-                        : appointmentsCount[i]
+                        : appointmentsCount[getDate(day)]
                         ? "full"
                         : ""
                       : "different-month"

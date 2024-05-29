@@ -116,7 +116,6 @@ const router = createBrowserRouter([
           },
           {
             path: "patients",
-            loader: patientsLoader,
             element: <Patients />,
           },
           {
