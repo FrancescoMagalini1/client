@@ -6,7 +6,7 @@ import XIcon from "./icons/XIcon";
 
 type inputProps = {
   id?: string;
-  initialValue?: string;
+  initialValue?: patientSearch[];
   maxLength?: number;
   changeFunction?: (patientIds: number[]) => void;
 };
@@ -17,10 +17,16 @@ type patientSearch = {
   surname: string;
 };
 
-function PatientsInputComponent({ id = "", changeFunction }: inputProps) {
+function PatientsInputComponent({
+  id = "",
+  changeFunction,
+  initialValue = [],
+}: inputProps) {
   let timerId = useRef<number | null>(null);
   let [patientSearchList, setPatientSearchList] = useState<patientSearch[]>([]);
-  let [selectedPatients, setSelectedPatients] = useState<patientSearch[]>([]);
+  let [selectedPatients, setSelectedPatients] = useState<patientSearch[]>(
+    initialValue.length ? [...initialValue] : []
+  );
 
   const selectedPatientsSet = new Set(selectedPatients.map((el) => el.id));
 

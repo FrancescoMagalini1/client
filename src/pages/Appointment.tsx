@@ -42,6 +42,9 @@ function Appointment() {
             </div>
             <h3>Description</h3>
             <p>{appointment.description || "None"}</p>
+            <Link to={`/appointments/${appointment.id}/edit`}>
+              Edit Appointment
+            </Link>
           </div>
         </>
       ) : (

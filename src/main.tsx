@@ -129,6 +129,11 @@ const router = createBrowserRouter([
         element: <Appointment />,
       },
       {
+        path: "appointments/:appointmentId/edit",
+        loader: appointmentLoader,
+        element: <NewAppointment />,
+      },
+      {
         path: "appointments/new",
         element: <NewAppointment />,
       },

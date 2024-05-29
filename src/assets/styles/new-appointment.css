@@ -28,7 +28,8 @@
   cursor: pointer;
 }
 
-#new-appointment form > button {
+#new-appointment form > button,
+#new-appointment form .buttons button {
   background-color: var(--violet);
   cursor: pointer;
   color: var(--white);
@@ -38,4 +39,13 @@
   border-radius: 0.5rem;
   margin-top: var(--space-m);
   align-self: center;
+}
+
+#new-appointment form .buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+#new-appointment form button.delete {
+  background-color: var(--red);
 }

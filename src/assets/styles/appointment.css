@@ -46,3 +46,25 @@
   background-color: var(--white);
   border-radius: 0.5rem;
 }
+
+#appointment .patients a:nth-child(3n + 2) {
+  background-color: var(--violet);
+  color: var(--white);
+}
+
+#appointment .patients a:nth-child(3n) {
+  background-color: var(--light-yellow);
+}
+
+#appointment .content > a {
+  background-color: var(--violet);
+  cursor: pointer;
+  color: var(--white);
+  border: none;
+  padding: var(--space-3xs) var(--space-m);
+  width: fit-content;
+  border-radius: 0.5rem;
+  margin-top: var(--space-m);
+  align-self: center;
+  text-decoration: none;
+}
