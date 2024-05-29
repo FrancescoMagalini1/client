@@ -1,0 +1,48 @@
+#appointment {
+  padding: var(--space-l);
+  background-color: var(--light-grey);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+#appointment .header {
+  display: flex;
+}
+
+#appointment .header button {
+  padding: var(--space-2xs);
+  background-color: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+#appointment .content {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-l);
+  width: 50%;
+  align-self: center;
+}
+
+#appointment h3 {
+  margin-top: var(--space-m);
+  margin-bottom: var(--space-3xs);
+  font-weight: normal;
+  font-size: var(--fs-md);
+}
+
+#appointment .patients {
+  display: flex;
+  gap: var(--space-xs);
+  flex-wrap: wrap;
+}
+
+#appointment .patients a {
+  text-decoration: none;
+  padding: var(--space-3xs) var(--space-m);
+  width: fit-content;
+  background-color: var(--white);
+  border-radius: 0.5rem;
+}

@@ -35,39 +35,51 @@ import ArrowRightIcon from "../components/icons/ArrowRightIcon";
 
 const weekOptions: EndOfWeekOptions = { weekStartsOn: 1 };
 
-type view = "day" | "week" | "month";
-
 type SQLiteCountResult = { n: number; day: string }[];
 
 function Calendar() {
-  let [date, setDate] = useState(new Date());
-  let [weekData, setWeekData] = useState<Date[]>([]);
-  let [monthData, setMonthData] = useState<Date[]>([]);
-  let [fullMonthData, setfullMonthData] = useState<Date[]>([]);
+  let [date, setDate] = useState(useAppStore.getState().calendarDate);
+  let [weekData, setWeekData] = useState<Date[]>(
+    _getWeekData(useAppStore.getState().calendarDate)
+  );
+  let [monthData, setMonthData] = useState<Date[]>(
+    _getMonthData(useAppStore.getState().calendarDate)
+  );
+  let [fullMonthData, setfullMonthData] = useState<Date[]>(
+    _getFullMonthData(useAppStore.getState().calendarDate)
+  );
   let [appointments, setAppointments] = useState<appointment[]>([]);
   let [appointmentsCount, setAppointmentsCount] = useState<number[]>([0]);
-  let [view, setView] = useState<view>("day");
+  let [view, setView] = useState(useAppStore.getState().calendarView);
   const setCalendarDate = useAppStore((state) => state.setCalendarDate);
+  const setCalendarView = useAppStore((state) => state.setCalendarView);
 
-  function _setWeekData(date: Date) {
+  function _getWeekData(date: Date) {
     let start = startOfWeek(date, weekOptions);
     let end = endOfWeek(date, weekOptions);
-    setWeekData(eachDayOfInterval(interval(start, end)));
+    return eachDayOfInterval(interval(start, end));
+  }
+
+  function _setWeekData(date: Date) {
+    setWeekData(_getWeekData(date));
+  }
+
+  function _getMonthData(date: Date) {
+    let start = startOfMonth(date);
+    let end = endOfMonth(date);
+    return eachDayOfInterval(interval(start, end));
+  }
+
+  function _getFullMonthData(date: Date) {
+    let start = startOfWeek(startOfMonth(date), weekOptions);
+    let end = endOfWeek(endOfMonth(date), weekOptions);
+    return eachDayOfInterval(interval(start, end));
   }
 
   function _setMonthData(date: Date) {
-    let start = startOfMonth(date);
-    let end = endOfMonth(date);
-    setMonthData(eachDayOfInterval(interval(start, end)));
+    setMonthData(_getMonthData(date));
+    setfullMonthData(_getFullMonthData(date));
   }
-
-  useEffect(() => {
-    if (monthData.length) {
-      let start = startOfWeek(monthData[0], weekOptions);
-      let end = endOfWeek(monthData[monthData.length - 1], weekOptions);
-      setfullMonthData(eachDayOfInterval(interval(start, end)));
-    }
-  }, [monthData]);
 
   function moveWeek(number: 1 | -1) {
     _setWeekData(
@@ -89,6 +101,7 @@ function Calendar() {
   useEffect(() => {
     async function getPatients() {
       setCalendarDate(date);
+      setCalendarView(view);
       if (view == "day") {
         let startInterval = new Date(date);
         startInterval.setHours(0, 0, 0);
@@ -202,9 +215,9 @@ function Calendar() {
       <div className="content">
         {view == "day" ? (
           appointments.length ? (
-            <>
-              <div className="appointments">
-                {appointments.map((appointment) => (
+            <div className="appointments">
+              {appointments.map((appointment) => (
+                <Link to={`/appointments/${appointment.id}`}>
                   <div className="appointment" key={appointment.id}>
                     <p>
                       Time:{" "}
@@ -219,9 +232,9 @@ function Calendar() {
                         .join(", ")}
                     </p>
                   </div>
-                ))}
-              </div>
-            </>
+                </Link>
+              ))}
+            </div>
           ) : (
             <p className="no-appointments">{noAppointmentsText}</p>
           )
@@ -295,7 +308,7 @@ function Calendar() {
                     isSameMonth(day, monthData[0])
                       ? isSameDay(day, date)
                         ? "selected"
-                        : appointmentsCount[getDate(day)]
+                        : appointmentsCount[getDate(day) - 1]
                         ? "full"
                         : ""
                       : "different-month"

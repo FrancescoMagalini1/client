@@ -1,5 +1,5 @@
 import "../assets/styles/patient.css";
-import { useLoaderData, Link } from "react-router-dom";
+import { useLoaderData, Link, useNavigate } from "react-router-dom";
 import { patient } from "../typescript/types/data";
 import ArrowLeftIcon from "../components/icons/ArrowLeftIcon";
 import Avatar from "boring-avatars";
@@ -16,15 +16,16 @@ function Patient() {
       ? "Male"
       : "Other"
     : "";
+  let navigate = useNavigate();
 
   return (
     <div id="patient">
       {patient ? (
         <>
           <div className="header">
-            <Link to="/patients">
+            <button onClick={() => navigate(-1)}>
               <ArrowLeftIcon />
-            </Link>
+            </button>
           </div>
           <div className="content">
             <div className="avatar">

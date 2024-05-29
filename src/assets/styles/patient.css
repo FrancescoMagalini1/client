@@ -10,8 +10,12 @@
   display: flex;
 }
 
-#patient .header a {
+#patient .header button {
   padding: var(--space-2xs);
+  background-color: inherit;
+  border: none;
+  outline: none;
+  cursor: pointer;
 }
 
 #patient .content {

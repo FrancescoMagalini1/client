@@ -77,22 +77,26 @@
 
 #calendar .appointment {
   padding: var(--space-m) var(--space-s);
+}
+
+#calendar .appointments a {
+  text-decoration: none;
   border-radius: 14px;
 }
 
-#calendar .appointment:nth-child(3n + 1) {
+#calendar .appointments a:nth-child(3n + 1) {
   background-color: var(--white);
 }
 
-#calendar .appointment:nth-child(3n + 2) {
+#calendar .appointments a:nth-child(3n + 2) {
   background-color: var(--violet);
 }
 
-#calendar .appointment:nth-child(3n + 2) p {
+#calendar .appointments a:nth-child(3n + 2) p {
   color: var(--white);
 }
 
-#calendar .appointment:nth-child(3n) {
+#calendar .appointments a:nth-child(3n) {
   background-color: var(--light-yellow);
 }
 
